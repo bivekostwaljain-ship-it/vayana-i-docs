@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vayana I Docs - Intelligent Document Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e40af;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --secondary: #f8fafc;
+            --accent: #059669;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --bg: #ffffff;
+            --bg-light: #f8fafc;
+            --vayana-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: var(--vayana-gradient);
+            min-height: 100vh;
+            color: var(--text);
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            background: var(--vayana-gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            color: white;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header h1 {
+            color: var(--text);
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--vayana-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .header .tagline {
+            color: var(--text-light);
+            margin-top: 6px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 32px;
+        }
+
+        .content-area {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .ai-chat-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: var(--shadow-xl);
+            height: fit-content;
+            position: sticky;
+            top: 24px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .ai-avatar {
+            width: 44px;
+            height: 44px;
+            background: var(--vayana-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .chat-messages {
+            height: 420px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+        }
+
+        .chat-message {
+            margin-bottom: 16px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            max-width: 90%;
+            animation: slideIn 0.3s ease;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-message.user {
+            background: var(--vayana-gradient);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .chat-message.ai {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .chat-send {
+            padding: 14px 20px;
+            background: var(--vayana-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .chat-send:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .document-form {
+            background: white;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+        }
+
+        .form-header {
+            margin-bottom: 32px;
+            text-align: center;
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .form-header h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .form-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section-title {
+            color: var(--text);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-light);
+            letter-spacing: -0.25px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+            letter-spacing: 0.25px;
+        }
+
+        .form-group .required {
+            color: var(--danger);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            letter-spacing: 0.25px;
+        }
+
+        .btn-primary {
+            background: var(--vayana-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .documents-list {
+            margin-top: 32px;
+        }
+
+        .document-item {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .document-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .document-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .document-title {
+            font-weight: 700;
+            color: var(--text);
+            font-size: 1.2rem;
+            letter-spacing: -0.25px;
+        }
+
+        .document-company {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-active { 
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0); 
+            color: #065f46; 
+        }
+        .status-pending { 
+            background: linear-gradient(135deg, #fef3c7, #fde68a); 
+            color: #92400e; 
+        }
+        .status-expired {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #991b1b;
+        }
+
+        .thinking-indicator {
+            display: none;
+            padding: 14px 18px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-style: italic;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            background: var(--bg-light);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(30, 64, 175, 0.05);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .form-row-triple {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row,
+            .form-row-triple {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--vayana-gradient);
+            color: white;
+            padding: 28px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .welcome-message {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1px solid var(--primary-light);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .welcome-message h2 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-message p {
+            color: var(--text-light);
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        .dynamic-list {
+            margin-top: 16px;
+        }
+
+        .dynamic-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+        }
+
+        .dynamic-item input {
+            flex: 1;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .dynamic-item .btn-remove {
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .add-item-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 32px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">VI</div>
+                    <div>
+                        <h1>Vayana I Docs</h1>
+                        <p class="tagline">Legal & Finance Document Management System</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="showAddDocument()">
+                        + Add Document
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-area">
+                <!-- Welcome Message -->
+                <div class="welcome-message">
+                    <h2>Document Management Hub</h2>
+                    <p>Centralized tracking and management of all legal and financial documents with AI-powered insights and automated compliance monitoring.</p>
+                </div>
+
+                <!-- Stats Overview -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-docs">2</div>
+                        <div class="stat-label">Total Documents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-value">$205K</div>
+                        <div class="stat-label">Portfolio Value</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="active-docs">2</div>
+                        <div class="stat-label">Active Documents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="expiring-soon">0</div>
+                        <div class="stat-label">Expiring Soon</div>
+                    </div>
+                </div>
+
+                <!-- Add Document Form -->
+                <div id="add-document-form" class="document-form" style="display: none;">
+                    <div class="form-header">
+                        <h3>Add New Legal/Financial Document</h3>
+                        <p>Complete all required fields to ensure proper document tracking and compliance</p>
+                    </div>
+                    
+                    <form onsubmit="addDocument(event)">
+                        <!-- Basic Information Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">Basic Information</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="contract-type">Document Type <span class="required">*</span></label>
+                                    <select id="contract-type" required>
+                                        <option value="">Select Document Type</option>
+                                        <option value="Non-Disclosure Agreement (NDA)">Non-Disclosure Agreement (NDA)</option>
+                                        <option value="Purchase Order">Purchase Order</option>
+                                        <option value="Utility Agreement">Utility Agreement</option>
+                                        <option value="Customer Agreement">Customer Agreement</option>
+                                        <option value="Vendor Agreement">Vendor Agreement</option>
+                                        <option value="Service Agreement">Service Agreement</option>
+                                        <option value="Employment Contract">Employment Contract</option>
+                                        <option value="Lease Agreement">Lease Agreement</option>
+                                        <option value="License Agreement">License Agreement</option>
+                                        <option value="Partnership Agreement">Partnership Agreement</option>
+                                        <option value="Distribution Agreement">Distribution Agreement</option>
+                                        <option value="Supply Agreement">Supply Agreement</option>
+                                        <option value="Maintenance Agreement">Maintenance Agreement</option>
+                                        <option value="Consulting Agreement">Consulting Agreement</option>
+                                        <option value="Insurance Policy">Insurance Policy</option>
+                                        <option value="Loan Agreement">Loan Agreement</option>
+                                        <option value="Trade Finance Agreement">Trade Finance Agreement</option>
+                                        <option value="Master Service Agreement">Master Service Agreement</option>
+                                        <option value="Statement of Work (SOW)">Statement of Work (SOW)</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="document-title">Document Title <span class="required">*</span></label>
+                                    <input type="text" id="document-title" required placeholder="e.g., Master Service Agreement with ABC Corp">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="company-name">Counterparty Name <span class="required">*</span></label>
+                                    <input type="text" id="company-name" required placeholder="Legal entity name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="document-value">Contract Value</label>
+                                    <input type="text" id="document-value" placeholder="e.g., $50,000 or ₹40,00,000">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Contract Terms Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">Contract Terms & Dates</div>
+                            <div class="form-row-triple">
+                                <div class="form-group">
+                                    <label for="start-date">Start Date <span class="required">*</span></label>
+                                    <input type="date" id="start-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="end-date">End Date <span class="required">*</span></label>
+                                    <input type="date" id="end-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="auto-renewal">Auto-Renewal</label>
+                                    <select id="auto-renewal">
+                                        <option value="No">No</option>
+                                        <option value="Yes - 30 days notice">Yes - 30 days notice</option>
+                                        <option value="Yes - 60 days notice">Yes - 60 days notice</option>
+                                        <option value="Yes - 90 days notice">Yes - 90 days notice</option>
+                                        <option value="Yes - Other">Yes - Other notice period</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Events of Default Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">Events of Default Clauses</div>
+                            <p style="color: var(--text-light); margin-bottom: 16px; font-size: 14px;">List all events that would constitute a default under this agreement</p>
+                            <div id="events-of-default">
+                                <div class="dynamic-item">
+                                    <input type="text" placeholder="e.g., Failure to make payment within 30 days" />
+                                    <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="add-item-btn" onclick="addDefaultEvent()">+ Add Event of Default</button>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Survival Clauses Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">Survival Clauses</div>
+                            <p style="color: var(--text-light); margin-bottom: 16px; font-size: 14px;">Specify which provisions will survive termination of the contract</p>
+                            <div id="survival-clauses">
+                                <div class="dynamic-item">
+                                    <input type="text" placeholder="e.g., Confidentiality obligations" />
+                                    <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="add-item-btn" onclick="addSurvivalClause()">+ Add Survival Clause</button>
+                        </div>
+
+                        <div class="section-divider"></div>
+
+                        <!-- Additional Information Section -->
+                        <div class="form-section">
+                            <div class="form-section-title">Additional Information</div>
+                            <div class="form-group">
+                                <label for="key-terms">Key Terms & Special Conditions</label>
+                                <textarea id="key-terms" placeholder="Include payment terms, deliverables, performance metrics, penalties, etc."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="governing-law">Governing Law & Jurisdiction</label>
+                                <input type="text" id="governing-law" placeholder="e.g., Laws of State of Delaware, USA">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="primary-contact">Primary Contact (Internal)</label>
+                                    <input type="text" id="primary-contact" placeholder="Name and department">
+                                </div>
+                                <div class="form-group">
+                                    <label for="review-date">Next Review Date</label>
+                                    <input type="date" id="review-date">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="upload-zone" onclick="document.getElementById('document-file').click()">
+                                    <div style="font-size: 2.5rem; margin-bottom: 12px;">📄</div>
+                                    <p style="font-weight: 600; margin-bottom: 6px;">Upload Document File</p>
+                                    <p style="font-size: 14px; color: var(--text-muted);">PDF, DOC, DOCX files supported (Max 10MB)</p>
+                                    <input type="file" id="document-file" style="display: none;" accept=".pdf,.doc,.docx">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
+                            <button type="button" class="btn btn-secondary" onclick="hideAddDocument()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Document</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Documents List -->
+                <div id="documents-list">
+                    <h3 style="margin-bottom: 24px; color: var(--primary); font-weight: 700; font-size: 1.5rem;">Document Portfolio</h3>
+                    <div id="documents-container">
+                        <!-- Documents will be displayed here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-chat-panel">
+                <div class="chat-header">
+                    <div class="ai-avatar">AI</div>
+                    <div>
+                        <h3 style="color: var(--primary); font-weight: 700;">Vayana Assistant</h3>
+                        <p style="font-size: 14px; color: var(--text-light); font-weight: 500;">Legal & Finance Document Expert</p>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-message ai">
+                        <div style="font-weight: 600; margin-bottom: 8px; color: var(--primary);">Welcome to Vayana I Docs!</div>
+                        I'm your AI assistant specialized in legal and financial document management. I can help you:
+                        <ul style="margin-top: 12px; padding-left: 20px; line-height: 1.6;">
+                            <li>Track contract terms and key dates</li>
+                            <li>Monitor events of default and survival clauses</li>
+                            <li>Analyze compliance requirements</li>
+                            <li>Identify renewal opportunities</li>
+                            <li>Generate reports for legal and finance teams</li>
+                        </ul>
+                        What would you like to know about your document portfolio?
+                    </div>
+                </div>
+
+                <div class="thinking-indicator" id="thinking-indicator">
+                    Analyzing documents and legal terms...
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="Ask about documents, compliance, or contracts..." onkeypress="handleChatKeyPress(event)">
+                    <button class="chat-send" onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Document storage with enhanced fields for legal/finance tracking
+        let documents = JSON.parse(localStorage.getItem('vayana_docs')) || [
+            {
+                id: 1,
+                title: "Master Service Agreement",
+                company: "TechSolutions Inc.",
+                type: "Service Agreement",
+                value: "$120,000",
+                startDate: "2024-01-15",
+                endDate: "2025-12-15",
+                autoRenewal: "Yes - 60 days notice",
+                eventsOfDefault: [
+                    "Failure to make payment within 30 days of invoice date",
+                    "Material breach of confidentiality obligations",
+                    "Bankruptcy or insolvency proceedings"
+                ],
+                survivalClauses: [
+                    "Confidentiality and non-disclosure provisions",
+                    "Indemnification obligations",
+                    "Intellectual property rights"
+                ],
+                terms: "Monthly service fees with annual escalation clause. SLA guarantees 99.9% uptime.",
+                governingLaw: "Laws of State of Delaware, USA",
+                primaryContact: "John Smith - Legal Department",
+                reviewDate: "2025-09-15",
+                status: "active",
+                addedDate: "2024-01-15"
+            },
+            {
+                id: 2,
+                title: "Software License Agreement",
+                company: "DataCore Systems",
+                type: "License Agreement",
+                value: "$85,000",
+                startDate: "2024-03-20",
+                endDate: "2025-10-30",
+                autoRenewal: "No",
+                eventsOfDefault: [
+                    "Unauthorized use or distribution of licensed software",
+                    "Failure to pay licensing fees within grace period"
+                ],
+                survivalClauses: [
+                    "Limitation of liability provisions",
+                    "Termination and data return obligations"
+                ],
+                terms: "Enterprise software license with unlimited users. Includes support and maintenance.",
+                governingLaw: "Laws of California, USA",
+                primaryContact: "Sarah Wilson - IT Procurement",
+                reviewDate: "2025-08-30",
+                status: "active",
+                addedDate: "2024-03-20"
+            }
+        ];
+
+        let nextDocumentId = documents.length > 0 ? Math.max(...documents.map(d => d.id)) + 1 : 1;
+
+        // Update stats
+        function updateStats() {
+            const totalDocs = documents.length;
+            const activeDocs = documents.filter(d => d.status === 'active').length;
+            const totalValue = documents.reduce((sum, doc) => {
+                const value = doc.value.replace(/[$,₹]/g, '');
+                const number = parseFloat(value);
+                return sum + (isNaN(number) ? 0 : number);
+            }, 0);
+            
+            const expiringSoon = documents.filter(d => {
+                if (!d.endDate) return false;
+                const days = Math.ceil((new Date(d.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+                return days <= 90 && days > 0;
+            }).length;
+
+            document.getElementById('total-docs').textContent = totalDocs;
+            document.getElementById('active-docs').textContent = activeDocs;
+            document.getElementById('total-value').textContent = totalValue >= 1000 ? `${(totalValue/1000).toFixed(0)}K` : `${totalValue.toLocaleString()}`;
+            document.getElementById('expiring-soon').textContent = expiringSoon;
+        }
+
+        // Display documents
+        function displayDocuments() {
+            const container = document.getElementById('documents-container');
+            
+            if (documents.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 48px; color: var(--text-light);">
+                        <div style="font-size: 4rem; margin-bottom: 24px;">📋</div>
+                        <h3 style="font-weight: 700; margin-bottom: 12px;">No documents yet</h3>
+                        <p style="font-weight: 500;">Add your first legal or financial document to start tracking with Vayana I Docs</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = documents.map(doc => {
+                const daysUntilExpiry = doc.endDate ? Math.ceil((new Date(doc.endDate) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                let statusClass = 'status-active';
+                let statusText = 'Active';
+                
+                if (daysUntilExpiry !== null) {
+                    if (daysUntilExpiry < 0) {
+                        statusClass = 'status-expired';
+                        statusText = 'Expired';
+                    } else if (daysUntilExpiry <= 30) {
+                        statusClass = 'status-pending';
+                        statusText = 'Expiring Soon';
+                    }
+                }
+
+                return `
+                    <div class="document-item">
+                        <div class="document-header">
+                            <div>
+                                <div class="document-title">${doc.title}</div>
+                                <div class="document-company">${doc.company}</div>
+                            </div>
+                            <div class="status-badge ${statusClass}">${statusText}</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0; font-size: 14px; color: var(--text-light);">
+                            <div><strong>Type:</strong> ${doc.type}</div>
+                            <div><strong>Value:</strong> ${doc.value}</div>
+                            <div><strong>Start:</strong> ${formatDate(doc.startDate)}</div>
+                            <div><strong>End:</strong> ${formatDate(doc.endDate)}</div>
+                            <div><strong>Auto-Renewal:</strong> ${doc.autoRenewal}</div>
+                            <div><strong>Contact:</strong> ${doc.primaryContact || 'Not specified'}</div>
+                        </div>
+                        <div style="margin: 16px 0; font-size: 14px;">
+                            <div style="margin-bottom: 8px;"><strong>Key Terms:</strong> ${doc.terms}</div>
+                            ${doc.eventsOfDefault && doc.eventsOfDefault.length > 0 ? 
+                                `<div style="margin-bottom: 8px;"><strong>Events of Default:</strong> ${doc.eventsOfDefault.length} clause(s) defined</div>` : ''
+                            }
+                            ${doc.survivalClauses && doc.survivalClauses.length > 0 ? 
+                                `<div><strong>Survival Clauses:</strong> ${doc.survivalClauses.length} provision(s) survive termination</div>` : ''
+                            }
+                        </div>
+                        <div class="document-actions">
+                            <button class="btn btn-primary btn-small" onclick="analyzeDocument(${doc.id})">Legal Analysis</button>
+                            <button class="btn btn-outline btn-small" onclick="viewDetails(${doc.id})">View Details</button>
+                            <button class="btn btn-secondary btn-small" onclick="deleteDocument(${doc.id})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            updateStats();
+        }
+
+        // Show/hide add document form
+        function showAddDocument() {
+            document.getElementById('add-document-form').style.display = 'block';
+            document.getElementById('documents-list').style.display = 'none';
+        }
+
+        function hideAddDocument() {
+            document.getElementById('add-document-form').style.display = 'none';
+            document.getElementById('documents-list').style.display = 'block';
+            document.querySelector('form').reset();
+            
+            // Reset dynamic lists
+            document.getElementById('events-of-default').innerHTML = `
+                <div class="dynamic-item">
+                    <input type="text" placeholder="e.g., Failure to make payment within 30 days" />
+                    <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+                </div>
+            `;
+            document.getElementById('survival-clauses').innerHTML = `
+                <div class="dynamic-item">
+                    <input type="text" placeholder="e.g., Confidentiality obligations" />
+                    <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+                </div>
+            `;
+        }
+
+        // Dynamic list management
+        function addDefaultEvent() {
+            const container = document.getElementById('events-of-default');
+            const newItem = document.createElement('div');
+            newItem.className = 'dynamic-item';
+            newItem.innerHTML = `
+                <input type="text" placeholder="Describe the event of default" />
+                <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function addSurvivalClause() {
+            const container = document.getElementById('survival-clauses');
+            const newItem = document.createElement('div');
+            newItem.className = 'dynamic-item';
+            newItem.innerHTML = `
+                <input type="text" placeholder="Describe the survival clause" />
+                <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function removeItem(button) {
+            const container = button.parentElement.parentElement;
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        // Add new document
+        function addDocument(event) {
+            event.preventDefault();
+            
+            // Collect events of default
+            const eventsOfDefault = Array.from(document.querySelectorAll('#events-of-default input'))
+                .map(input => input.value.trim())
+                .filter(value => value !== '');
+            
+            // Collect survival clauses
+            const survivalClauses = Array.from(document.querySelectorAll('#survival-clauses input'))
+                .map(input => input.value.trim())
+                .filter(value => value !== '');
+            
+            const newDocument = {
+                id: nextDocumentId++,
+                title: document.getElementById('document-title').value,
+                company: document.getElementById('company-name').value,
+                type: document.getElementById('contract-type').value,
+                value: document.getElementById('document-value').value || 'Not specified',
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value,
+                autoRenewal: document.getElementById('auto-renewal').value,
+                eventsOfDefault: eventsOfDefault,
+                survivalClauses: survivalClauses,
+                terms: document.getElementById('key-terms').value || 'No additional terms specified',
+                governingLaw: document.getElementById('governing-law').value || 'Not specified',
+                primaryContact: document.getElementById('primary-contact').value || 'Not specified',
+                reviewDate: document.getElementById('review-date').value,
+                status: 'active',
+                addedDate: new Date().toISOString().split('T')[0]
+            };
+
+            documents.push(newDocument);
+            localStorage.setItem('vayana_docs', JSON.stringify(documents));
+            
+            hideAddDocument();
+            displayDocuments();
+            
+            // Add AI message about new document
+            addChatMessage(`Document added successfully! **${newDocument.title}** with ${newDocument.company} has been added to your portfolio.\n\nKey details captured:\n• Document Type: ${newDocument.type}\n• Contract Value: ${newDocument.value}\n• ${newDocument.eventsOfDefault.length} event(s) of default defined\n• ${newDocument.survivalClauses.length} survival clause(s) specified\n\nWould you like me to perform a legal analysis of this document?`, 'ai');
+        }
+
+        // Delete document
+        function deleteDocument(id) {
+            if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+                documents = documents.filter(d => d.id !== id);
+                localStorage.setItem('vayana_docs', JSON.stringify(documents));
+                displayDocuments();
+                
+                addChatMessage(`Document deleted successfully. Your portfolio has been updated.`, 'ai');
+            }
+        }
+
+        // View document details
+        function viewDetails(id) {
+            const doc = documents.find(d => d.id === id);
+            if (!doc) return;
+
+            let details = `**${doc.title}** - Detailed View\n\n`;
+            details += `**Counterparty:** ${doc.company}\n`;
+            details += `**Document Type:** ${doc.type}\n`;
+            details += `**Contract Value:** ${doc.value}\n`;
+            details += `**Term:** ${formatDate(doc.startDate)} to ${formatDate(doc.endDate)}\n`;
+            details += `**Auto-Renewal:** ${doc.autoRenewal}\n`;
+            details += `**Governing Law:** ${doc.governingLaw}\n`;
+            details += `**Primary Contact:** ${doc.primaryContact}\n\n`;
+            
+            if (doc.eventsOfDefault && doc.eventsOfDefault.length > 0) {
+                details += `**Events of Default:**\n`;
+                doc.eventsOfDefault.forEach((event, index) => {
+                    details += `${index + 1}. ${event}\n`;
+                });
+                details += `\n`;
+            }
+            
+            if (doc.survivalClauses && doc.survivalClauses.length > 0) {
+                details += `**Survival Clauses:**\n`;
+                doc.survivalClauses.forEach((clause, index) => {
+                    details += `${index + 1}. ${clause}\n`;
+                });
+                details += `\n`;
+            }
+            
+            details += `**Key Terms:** ${doc.terms}`;
+            
+            addChatMessage(details, 'ai');
+        }
+
+        // Analyze document
+        function analyzeDocument(id) {
+            const doc = documents.find(d => d.id === id);
+            if (!doc) return;
+
+            showThinking();
+            
+            setTimeout(() => {
+                hideThinking();
+                
+                const analysis = generateLegalAnalysis(doc);
+                addChatMessage(`**Legal Analysis: ${doc.title}**\n\n${analysis}`, 'ai');
+            }, 2500);
+        }
+
+        // Generate legal analysis
+        function generateLegalAnalysis(doc) {
+            const daysUntilExpiry = doc.endDate ? Math.ceil((new Date(doc.endDate) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+            
+            let analysis = `**Executive Summary:**\n`;
+            analysis += `Document Type: ${doc.type} with ${doc.company}\n`;
+            analysis += `Contract Value: ${doc.value}\n`;
+            analysis += `Auto-Renewal: ${doc.autoRenewal}\n\n`;
+            
+            // Expiry analysis
+            if (daysUntilExpiry !== null) {
+                if (daysUntilExpiry < 0) {
+                    analysis += `**CRITICAL ALERT:** Contract expired ${Math.abs(daysUntilExpiry)} days ago. Immediate action required.\n\n`;
+                } else if (daysUntilExpiry <= 30) {
+                    analysis += `**URGENT:** Contract expires in ${daysUntilExpiry} days. Initiate renewal process immediately.\n\n`;
+                } else if (daysUntilExpiry <= 90) {
+                    analysis += `**ATTENTION:** Contract expires in ${daysUntilExpiry} days. Begin renewal planning.\n\n`;
+                } else {
+                    analysis += `**STATUS:** Contract has ${daysUntilExpiry} days remaining. Monitor for renewal timeline.\n\n`;
+                }
+            }
+            
+            // Risk assessment
+            analysis += `**Risk Assessment:**\n`;
+            if (doc.eventsOfDefault && doc.eventsOfDefault.length > 0) {
+                analysis += `• ${doc.eventsOfDefault.length} events of default defined - Good risk management\n`;
+            } else {
+                analysis += `• No events of default specified - Consider adding default provisions\n`;
+            }
+            
+            if (doc.survivalClauses && doc.survivalClauses.length > 0) {
+                analysis += `• ${doc.survivalClauses.length} survival clauses identified - Adequate post-termination protection\n`;
+            } else {
+                analysis += `• No survival clauses specified - Review need for post-termination provisions\n`;
+            }
+            
+            if (doc.autoRenewal === 'No') {
+                analysis += `• Manual renewal required - Set calendar reminders\n`;
+            } else {
+                analysis += `• Auto-renewal clause present - Monitor notice requirements\n`;
+            }
+            
+            analysis += `\n**Compliance Notes:**\n`;
+            analysis += `• Governing Law: ${doc.governingLaw}\n`;
+            analysis += `• Primary Contact: ${doc.primaryContact}\n`;
+            
+            if (doc.reviewDate) {
+                const reviewDays = Math.ceil((new Date(doc.reviewDate) - new Date()) / (1000 * 60 * 60 * 24));
+                if (reviewDays <= 0) {
+                    analysis += `• Review Date: OVERDUE - Schedule immediate review\n`;
+                } else {
+                    analysis += `• Next Review: ${reviewDays} days (${formatDate(doc.reviewDate)})\n`;
+                }
+            }
+            
+            // Type-specific recommendations
+            analysis += `\n**Recommendations:**\n`;
+            if (doc.type.includes('NDA')) {
+                analysis += `• Ensure confidentiality period aligns with business needs\n• Verify carve-outs for publicly available information\n• Review return/destruction of confidential information clauses`;
+            } else if (doc.type.includes('Service')) {
+                analysis += `• Monitor SLA compliance and performance metrics\n• Review termination for convenience provisions\n• Ensure adequate indemnification coverage`;
+            } else if (doc.type.includes('License')) {
+                analysis += `• Verify license scope and usage restrictions\n• Monitor compliance with license terms\n• Review audit rights and obligations`;
+            } else {
+                analysis += `• Regular compliance monitoring recommended\n• Consider legal review for any amendments\n• Maintain documentation of performance`;
+            }
+            
+            return analysis;
+        }
+
+        // Chat functionality
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            showThinking();
+            
+            setTimeout(() => {
+                hideThinking();
+                const response = generateAIResponse(message);
+                addChatMessage(response, 'ai');
+            }, 1800);
+        }
+
+        function addChatMessage(message, sender) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            if (sender === 'ai') {
+                messageDiv.innerHTML = formatAIMessage(message);
+            } else {
+                messageDiv.textContent = message;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function formatAIMessage(message) {
+            return message
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>')
+                .replace(/•/g, '•');
+        }
+
+        function generateAIResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('expir') || lowerMessage.includes('renew')) {
+                const expiringDocs = documents.filter(d => {
+                    if (!d.endDate) return false;
+                    const days = Math.ceil((new Date(d.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+                    return days <= 90 && days > 0;
+                });
+                
+                if (expiringDocs.length === 0) {
+                    return "**Contract Renewal Status:** No documents are expiring in the next 90 days. Your portfolio is well-maintained for renewals.";
+                }
+                
+                let response = `**Documents Requiring Renewal Attention:**\n\n`;
+                expiringDocs.forEach(doc => {
+                    const days = Math.ceil((new Date(doc.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+                    const urgency = days <= 30 ? '🚨 URGENT' : days <= 60 ? '⚠️ IMPORTANT' : '📅 MONITOR';
+                    response += `${urgency} **${doc.title}** (${doc.company})\n`;
+                    response += `• Expires: ${formatDate(doc.endDate)} (${days} days)\n`;
+                    response += `• Auto-Renewal: ${doc.autoRenewal}\n`;
+                    response += `• Contact: ${doc.primaryContact}\n\n`;
+                });
+                response += `**Recommendation:** Prioritize documents marked as URGENT for immediate renewal action.`;
+                return response;
+            }
+            
+            if (lowerMessage.includes('compliance') || lowerMessage.includes('legal') || lowerMessage.includes('risk')) {
+                let response = `**Legal Compliance Dashboard:**\n\n`;
+                
+                const totalDocs = documents.length;
+                const docsWithDefaults = documents.filter(d => d.eventsOfDefault && d.eventsOfDefault.length > 0).length;
+                const docsWithSurvival = documents.filter(d => d.survivalClauses && d.survivalClauses.length > 0).length;
+                const autoRenewalDocs = documents.filter(d => d.autoRenewal !== 'No').length;
+                
+                response += `**Portfolio Health:**\n`;
+                response += `• Total Documents: ${totalDocs}\n`;
+                response += `• Documents with Default Clauses: ${docsWithDefaults}/${totalDocs} (${Math.round(docsWithDefaults/totalDocs*100)}%)\n`;
+                response += `• Documents with Survival Clauses: ${docsWithSurvival}/${totalDocs} (${Math.round(docsWithSurvival/totalDocs*100)}%)\n`;
+                response += `• Auto-Renewal Protection: ${autoRenewalDocs}/${totalDocs} (${Math.round(autoRenewalDocs/totalDocs*100)}%)\n\n`;
+                
+                const overdueReviews = documents.filter(d => {
+                    if (!d.reviewDate) return false;
+                    return new Date(d.reviewDate) < new Date();
+                }).length;
+                
+                if (overdueReviews > 0) {
+                    response += `**⚠️ Action Required:**\n• ${overdueReviews} document(s) have overdue review dates\n\n`;
+                }
+                
+                response += `**Recommendations:**\n`;
+                if (docsWithDefaults < totalDocs) {
+                    response += `• Add default clauses to ${totalDocs - docsWithDefaults} document(s)\n`;
+                }
+                if (docsWithSurvival < totalDocs) {
+                    response += `• Review survival clause needs for ${totalDocs - docsWithSurvival} document(s)\n`;
+                }
+                response += `• Schedule regular compliance reviews\n• Maintain updated contact information`;
+                
+                return response;
+            }
+            
+            if (lowerMessage.includes('default') || lowerMessage.includes('breach')) {
+                let response = `**Events of Default Analysis:**\n\n`;
+                
+                const docsWithDefaults = documents.filter(d => d.eventsOfDefault && d.eventsOfDefault.length > 0);
+                
+                if (docsWithDefaults.length === 0) {
+                    return `**Events of Default:** No documents currently have defined default events. Consider adding default provisions to protect your interests in case of counterparty non-performance.`;
+                }
+                
+                docsWithDefaults.forEach(doc => {
+                    response += `**${doc.title}** (${doc.company})\n`;
+                    doc.eventsOfDefault.forEach((event, index) => {
+                        response += `${index + 1}. ${event}\n`;
+                    });
+                    response += `\n`;
+                });
+                
+                response += `**Risk Management:** ${docsWithDefaults.length} document(s) have defined default events. Ensure monitoring procedures are in place for early detection of potential defaults.`;
+                return response;
+            }
+            
+            if (lowerMessage.includes('survival') || lowerMessage.includes('termination')) {
+                let response = `**Survival Clauses Analysis:**\n\n`;
+                
+                const docsWithSurvival = documents.filter(d => d.survivalClauses && d.survivalClauses.length > 0);
+                
+                if (docsWithSurvival.length === 0) {
+                    return `**Survival Clauses:** No documents currently have defined survival provisions. Consider adding survival clauses for confidentiality, indemnification, and other critical provisions that should outlast contract termination.`;
+                }
+                
+                docsWithSurvival.forEach(doc => {
+                    response += `**${doc.title}** (${doc.company})\n`;
+                    doc.survivalClauses.forEach((clause, index) => {
+                        response += `${index + 1}. ${clause}\n`;
+                    });
+                    response += `\n`;
+                });
+                
+                response += `**Post-Termination Protection:** ${docsWithSurvival.length} document(s) have survival provisions ensuring continued protection after contract expiration.`;
+                return response;
+            }
+            
+            if (lowerMessage.includes('portfolio') || lowerMessage.includes('summary') || lowerMessage.includes('overview')) {
+                const typeBreakdown = documents.reduce((acc, doc) => {
+                    acc[doc.type] = (acc[doc.type] || 0) + 1;
+                    return acc;
+                }, {});
+                
+                const totalValue = documents.reduce((sum, doc) => {
+                    const value = doc.value.replace(/[$,₹]/g, '');
+                    const number = parseFloat(value);
+                    return sum + (isNaN(number) ? 0 : number);
+                }, 0);
+                
+                let response = `**Portfolio Executive Summary:**\n\n`;
+                response += `**Financial Overview:**\n`;
+                response += `• Total Portfolio Value: ${totalValue.toLocaleString()}\n`;
+                response += `• Average Document Value: ${Math.round(totalValue/documents.length).toLocaleString()}\n`;
+                response += `• Total Documents: ${documents.length}\n\n`;
+                
+                response += `**Document Type Distribution:**\n`;
+                Object.entries(typeBreakdown).forEach(([type, count]) => {
+                    response += `• ${type}: ${count} (${Math.round(count/documents.length*100)}%)\n`;
+                });
+                
+                const expiringCount = documents.filter(d => {
+                    if (!d.endDate) return false;
+                    const days = Math.ceil((new Date(d.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+                    return days <= 90 && days > 0;
+                }).length;
+                
+                response += `\n**Upcoming Actions:**\n`;
+                response += `• ${expiringCount} document(s) expiring within 90 days\n`;
+                response += `• ${documents.filter(d => d.autoRenewal === 'No').length} document(s) require manual renewal\n`;
+                
+                return response;
+            }
+            
+            if (documents.some(d => d.company.toLowerCase().includes(lowerMessage) || d.title.toLowerCase().includes(lowerMessage))) {
+                const matchingDocs = documents.filter(d => 
+                    d.company.toLowerCase().includes(lowerMessage) || 
+                    d.title.toLowerCase().includes(lowerMessage)
+                );
+                
+                let response = `**Search Results:** Found ${matchingDocs.length} matching document(s)\n\n`;
+                matchingDocs.forEach(doc => {
+                    const daysUntilExpiry = doc.endDate ? Math.ceil((new Date(doc.endDate) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                    response += `**${doc.title}** (${doc.company})\n`;
+                    response += `• Type: ${doc.type} | Value: ${doc.value}\n`;
+                    response += `• Status: ${daysUntilExpiry ? `${daysUntilExpiry} days until expiry` : 'No expiry date'}\n`;
+                    response += `• Contact: ${doc.primaryContact}\n\n`;
+                });
+                return response;
+            }
+            
+            return `**Vayana Legal Assistant** - I specialize in legal document management and compliance. Try asking:\n\n• **"Show expiring documents"** - View upcoming renewals\n• **"Compliance dashboard"** - Legal risk assessment\n• **"Portfolio summary"** - Complete overview\n• **"Events of default analysis"** - Default clause review\n• **"Survival clauses review"** - Termination provisions\n• **Search by company name** - Find specific documents\n\nWhat legal or compliance information can I help you with?`;
+        }
+
+        function showThinking() {
+            document.getElementById('thinking-indicator').style.display = 'block';
+        }
+
+        function hideThinking() {
+            document.getElementById('thinking-indicator').style.display = 'none';
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Not specified';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            displayDocuments();
+            
+            // Add welcome message after a short delay
+            setTimeout(() => {
+                if (documents.length > 0) {
+                    const totalValue = documents.reduce((sum, doc) => {
+                        const value = doc.value.replace(/[$,₹]/g, '');
+                        const number = parseFloat(value);
+                        return sum + (isNaN(number) ? 0 : number);
+                    }, 0);
+                    
+                    const expiringCount = documents.filter(d => {
+                        if (!d.endDate) return false;
+                        const days = Math.ceil((new Date(d.endDate) - new Date()) / (1000 * 60 * 60 * 24));
+                        return days <= 90 && days > 0;
+                    }).length;
+                    
+                    addChatMessage(`**Portfolio Loaded Successfully!**\n\nI've analyzed your ${documents.length} legal documents with a total value of ${totalValue.toLocaleString()}.\n\n**Quick Status:**\n• ${documents.filter(d => d.eventsOfDefault && d.eventsOfDefault.length > 0).length} documents have defined default events\n• ${documents.filter(d => d.survivalClauses && d.survivalClauses.length > 0).length} documents have survival clauses\n• ${expiringCount} document(s) expiring within 90 days\n\nTry asking: "Compliance dashboard" or "Show expiring documents" to get started!`, 'ai');
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
