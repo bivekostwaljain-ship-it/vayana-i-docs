@@ -471,21 +471,132 @@
         }
 
         .upload-zone {
-            border: 2px dashed var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            text-align: center;
-            background: var(--bg-light);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            margin-bottom: 24px;
-        }
+    border: 2px dashed var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    background: var(--bg-light);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 24px;
+    position: relative;
+}
 
-        .upload-zone:hover {
-            border-color: var(--primary);
-            background: rgba(30, 64, 175, 0.05);
-        }
+.upload-zone:hover {
+    border-color: var(--primary);
+    background: rgba(30, 64, 175, 0.05);
+}
 
+.upload-zone.dragover {
+    border-color: var(--primary);
+    background: rgba(30, 64, 175, 0.1);
+    transform: scale(1.02);
+}
+
+.upload-progress {
+    display: none;
+    margin-top: 16px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--border-light);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--vayana-gradient);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.upload-status {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.file-preview {
+    display: none;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+    text-align: left;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.file-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--vayana-gradient);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.file-details {
+    flex: 1;
+}
+
+.file-name {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.file-size {
+    color: var(--text-light);
+    font-size: 12px;
+}
+
+.file-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-remove-file {
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.file-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 6px 12px;
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.file-link:hover {
+    background: var(--primary);
+    color: white;
+}
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -861,13 +972,35 @@
                             </div>
 
                             <div class="form-group">
-                                <div class="upload-zone" onclick="document.getElementById('document-file').click()">
-                                    <div style="font-size: 2.5rem; margin-bottom: 12px;">📄</div>
-                                    <p style="font-weight: 600; margin-bottom: 6px;">Upload Document File</p>
-                                    <p style="font-size: 14px; color: var(--text-muted);">PDF, DOC, DOCX files supported (Max 10MB)</p>
-                                    <input type="file" id="document-file" style="display: none;" accept=".pdf,.doc,.docx">
-                                </div>
-                            </div>
+    <div class="upload-zone" onclick="triggerFileUpload()" ondrop="handleFileDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+        <div style="font-size: 2.5rem; margin-bottom: 12px;">📄</div>
+        <p style="font-weight: 600; margin-bottom: 6px;">Upload Document File</p>
+        <p style="font-size: 14px; color: var(--text-muted);">PDF, DOC, DOCX files supported (Max 10MB)</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">Click to browse or drag & drop files here</p>
+        <input type="file" id="document-file" style="display: none;" accept=".pdf,.doc,.docx" onchange="handleFileSelect(event)">
+        
+        <div class="upload-progress" id="upload-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="upload-status" id="upload-status">Uploading...</div>
+        </div>
+    </div>
+    
+    <div class="file-preview" id="file-preview">
+        <div class="file-info">
+            <div class="file-icon" id="file-icon">PDF</div>
+            <div class="file-details">
+                <div class="file-name" id="file-name">document.pdf</div>
+                <div class="file-size" id="file-size">2.5 MB</div>
+            </div>
+            <div class="file-actions">
+                <button type="button" class="btn-remove-file" onclick="removeFile()">Remove</button>
+                <a href="#" class="file-link" id="file-link" target="_blank">View</a>
+            </div>
+        </div>
+    </div>
+</div>
                         </div>
 
                         <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
@@ -934,14 +1067,17 @@
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-        // Global variables
-        let documents = [];
-        let nextDocumentId = 1;
-        let useFirestore = true;
-        const COLLECTION_NAME = 'documents';
+// Global variables
+let documents = [];
+let nextDocumentId = 1;
+let useFirestore = true;
+let currentUploadedFile = null;
+const COLLECTION_NAME = 'documents';
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
@@ -1281,6 +1417,9 @@
                             ${doc.survivalClauses && doc.survivalClauses.length > 0 ? 
                                 `<div><strong>Survival Clauses:</strong> ${doc.survivalClauses.length} provision(s) survive termination</div>` : ''
                             }
+                            ${doc.fileUrl ? 
+    `<div><strong>Attached File:</strong> <a href="${doc.fileUrl}" target="_blank" style="color: var(--primary); font-weight: 600;">${doc.fileName || 'View Document'}</a></div>` : ''
+}
                         </div>
                         <div class="document-actions">
                             <button class="btn btn-primary btn-small" onclick="analyzeDocument('${doc.id}')">Legal Analysis</button>
@@ -1300,25 +1439,192 @@
         }
 
         function hideAddDocument() {
-            document.getElementById('add-document-form').style.display = 'none';
-            document.getElementById('documents-list').style.display = 'block';
-            document.querySelector('form').reset();
-            
-            // Reset dynamic lists
-            document.getElementById('events-of-default').innerHTML = `
-                <div class="dynamic-item">
-                    <input type="text" placeholder="e.g., Failure to make payment within 30 days" />
-                    <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
-                </div>
-            `;
-            document.getElementById('survival-clauses').innerHTML = `
-                <div class="dynamic-item">
-                    <input type="text" placeholder="e.g., Confidentiality obligations" />
-                    <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
-                </div>
-            `;
+    document.getElementById('add-document-form').style.display = 'none';
+    document.getElementById('documents-list').style.display = 'block';
+    document.querySelector('form').reset();
+    
+    // Reset dynamic lists
+    document.getElementById('events-of-default').innerHTML = `
+        <div class="dynamic-item">
+            <input type="text" placeholder="e.g., Failure to make payment within 30 days" />
+            <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+        </div>
+    `;
+    document.getElementById('survival-clauses').innerHTML = `
+        <div class="dynamic-item">
+            <input type="text" placeholder="e.g., Confidentiality obligations" />
+            <button type="button" class="btn-remove" onclick="removeItem(this)">Remove</button>
+        </div>
+    `;
+    
+    // Reset file upload state
+    currentUploadedFile = null;
+    document.getElementById('file-preview').style.display = 'none';
+    document.getElementById('upload-progress').style.display = 'none';
+}
         }
+// File Upload Functions
+function triggerFileUpload() {
+    if (!document.getElementById('upload-progress').style.display || 
+        document.getElementById('upload-progress').style.display === 'none') {
+        document.getElementById('document-file').click();
+    }
+}
 
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        validateAndPreviewFile(file);
+    }
+}
+
+function handleFileDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const uploadZone = event.currentTarget;
+    uploadZone.classList.remove('dragover');
+    
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+        validateAndPreviewFile(files[0]);
+    }
+}
+
+function handleDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.classList.add('dragover');
+}
+
+function handleDragLeave(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.classList.remove('dragover');
+}
+
+function validateAndPreviewFile(file) {
+    const allowedTypes = ['application/pdf', 'application/msword', 
+                         'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('Please select a PDF, DOC, or DOCX file.');
+        return;
+    }
+    
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+        alert('File size must be less than 10MB.');
+        return;
+    }
+    
+    currentUploadedFile = file;
+    showFilePreview(file);
+    uploadFileToStorage(file);
+}
+
+function showFilePreview(file) {
+    const preview = document.getElementById('file-preview');
+    const icon = document.getElementById('file-icon');
+    const name = document.getElementById('file-name');
+    const size = document.getElementById('file-size');
+    
+    if (file.type === 'application/pdf') {
+        icon.textContent = 'PDF';
+        icon.style.background = '#dc2626';
+    } else if (file.type.includes('word')) {
+        icon.textContent = 'DOC';
+        icon.style.background = '#2563eb';
+    }
+    
+    name.textContent = file.name;
+    size.textContent = formatFileSize(file.size);
+    preview.style.display = 'block';
+}
+
+async function uploadFileToStorage(file) {
+    if (!useFirestore) {
+        // For localStorage fallback, just store file info
+        currentUploadedFile = {
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            url: '#',
+            localFile: true
+        };
+        document.getElementById('file-link').style.display = 'inline-block';
+        document.getElementById('file-link').href = '#';
+        document.getElementById('file-link').onclick = () => alert('File upload requires cloud storage. Please check your connection.');
+        return;
+    }
+
+    try {
+        const progressContainer = document.getElementById('upload-progress');
+        const progressFill = document.getElementById('progress-fill');
+        const statusText = document.getElementById('upload-status');
+        
+        progressContainer.style.display = 'block';
+        
+        const timestamp = Date.now();
+        const fileName = `documents/${timestamp}_${file.name}`;
+        const storageRef = storage.ref().child(fileName);
+        const uploadTask = storageRef.put(file);
+        
+        uploadTask.on('state_changed', 
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                progressFill.style.width = progress + '%';
+                statusText.textContent = `Uploading... ${Math.round(progress)}%`;
+            },
+            (error) => {
+                statusText.textContent = 'Upload failed. Please try again.';
+                statusText.style.color = 'var(--danger)';
+            },
+            async () => {
+                const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+                
+                currentUploadedFile = {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    url: downloadURL,
+                    storagePath: fileName
+                };
+                
+                statusText.textContent = 'Upload complete!';
+                statusText.style.color = 'var(--accent)';
+                
+                document.getElementById('file-link').href = downloadURL;
+                document.getElementById('file-link').style.display = 'inline-block';
+                
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                    statusText.style.color = 'var(--text-light)';
+                }, 2000);
+            }
+        );
+    } catch (error) {
+        document.getElementById('upload-status').textContent = 'Upload failed.';
+    }
+}
+
+function removeFile() {
+    if (currentUploadedFile && currentUploadedFile.storagePath) {
+        storage.ref().child(currentUploadedFile.storagePath).delete();
+    }
+    
+    currentUploadedFile = null;
+    document.getElementById('file-preview').style.display = 'none';
+    document.getElementById('upload-progress').style.display = 'none';
+    document.getElementById('document-file').value = '';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
         function addDefaultEvent() {
             const container = document.getElementById('events-of-default');
             const newItem = document.createElement('div');
@@ -1379,7 +1685,16 @@
                 status: 'active',
                 addedDate: new Date().toISOString().split('T')[0]
             };
-
+// Add file information if uploaded
+if (currentUploadedFile) {
+    newDocument.fileName = currentUploadedFile.name;
+    newDocument.fileSize = currentUploadedFile.size;
+    newDocument.fileType = currentUploadedFile.type;
+    newDocument.fileUrl = currentUploadedFile.url;
+    if (currentUploadedFile.storagePath) {
+        newDocument.storagePath = currentUploadedFile.storagePath;
+    }
+}
             // Save to database (Firestore or localStorage)
             const saved = await saveDocumentToFirestore(newDocument);
             if (saved) {
@@ -1397,17 +1712,31 @@
         }
 
         async function deleteDocument(id) {
-            if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
-                const deleted = await deleteDocumentFromFirestore(id);
-                if (deleted) {
-                    documents = documents.filter(d => d.id != id);
-                    displayDocuments();
-                    addChatMessage(`Document deleted successfully. Your portfolio has been updated.`, 'ai');
-                } else {
-                    addChatMessage('Error deleting document. Please try again.', 'ai');
-                }
+    if (confirm('Are you sure you want to delete this document? This action cannot be undone.')) {
+        // Find the document to get file info
+        const docToDelete = documents.find(d => d.id == id);
+        
+        // Delete file from storage if it exists
+        if (docToDelete && docToDelete.storagePath && useFirestore) {
+            try {
+                await storage.ref().child(docToDelete.storagePath).delete();
+                console.log('File deleted from storage');
+            } catch (error) {
+                console.log('Error deleting file from storage:', error);
+                // Continue with document deletion even if file deletion fails
             }
         }
+        
+        const deleted = await deleteDocumentFromFirestore(id);
+        if (deleted) {
+            documents = documents.filter(d => d.id != id);
+            displayDocuments();
+            addChatMessage(`Document deleted successfully. Your portfolio has been updated.`, 'ai');
+        } else {
+            addChatMessage('Error deleting document. Please try again.', 'ai');
+        }
+    }
+}
 
         function viewDetails(id) {
             const doc = documents.find(d => d.id == id);
@@ -1755,4 +2084,5 @@
     </script>
 </body>
 </html>
+
 
