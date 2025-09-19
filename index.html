@@ -1980,7 +1980,7 @@
                 primaryContact: document.getElementById('primary-contact').value || 'Not specified',
                 reviewDate: document.getElementById('review-date').value,
                 status: 'active',
-                addedDate: new Date().toISOString().split('T')[0]
+                addedDate: new Date().toISOString().split('T')[0],
                 businessUnit: selectedBU,
                 customerType: selectedCustomerType || selectedDepartment,
                 customerCategory: selectedBU === 'Central Functions' ? 'Central Functions' : 'Business Unit'
@@ -2559,6 +2559,7 @@
     </script>
 </body>
 </html>
+
 
 
 
