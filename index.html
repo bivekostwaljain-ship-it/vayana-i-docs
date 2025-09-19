@@ -776,12 +776,306 @@
             background: #fee2e2;
             color: #dc2626;
         }
+
+        /* Modal Popup Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-30px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .modal-header p {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-light);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--border-light);
+            color: var(--text);
+        }
+
+        .wizard-step {
+            display: none;
+        }
+
+        .wizard-step.active {
+            display: block;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+            gap: 12px;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .step-dot.completed {
+            background: var(--accent);
+        }
+
+        .bu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .bu-option {
+            padding: 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .bu-option:hover {
+            border-color: var(--primary);
+            background: rgba(30, 64, 175, 0.05);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .bu-option.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .customer-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .customer-option {
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-weight: 500;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .customer-option:hover {
+            border-color: var(--primary);
+            background: rgba(30, 64, 175, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .customer-option.selected {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .wizard-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .btn-wizard {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+        }
+
+        .btn-wizard-back {
+            background: var(--secondary);
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-wizard-back:hover {
+            background: var(--border-light);
+        }
+
+        .btn-wizard-next {
+            background: var(--vayana-gradient);
+            color: white;
+        }
+
+        .btn-wizard-next:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-wizard-next:disabled {
+            background: var(--border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
     </style>
 </head>
 <body>
     <div id="connection-status" class="connection-status connected">Database Connected</div>
     
     <div class="container">
+        <!-- Business Unit Selection Modal -->
+    <div id="bu-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeBUModal()">&times;</button>
+            
+            <div class="modal-header">
+                <h2>Add New Document</h2>
+                <p>Select your Business Unit to continue</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step-dot active" id="step-dot-1"></div>
+                <div class="step-dot" id="step-dot-2"></div>
+                <div class="step-dot" id="step-dot-3"></div>
+            </div>
+
+            <!-- Step 1: Business Unit Selection -->
+            <div class="wizard-step active" id="step-1">
+                <h3 style="text-align: center; margin-bottom: 24px; color: var(--text); font-weight: 600;">Choose Business Unit</h3>
+                <div class="bu-grid">
+                    <div class="bu-option" data-bu="Credit Assessment" onclick="selectBU(this)">Credit Assessment</div>
+                    <div class="bu-option" data-bu="Trade Compliance" onclick="selectBU(this)">Trade Compliance</div>
+                    <div class="bu-option" data-bu="Supply Chain Finance" onclick="selectBU(this)">Supply Chain Finance</div>
+                    <div class="bu-option" data-bu="MSME Referral" onclick="selectBU(this)">MSME Referral</div>
+                    <div class="bu-option" data-bu="Cash Management" onclick="selectBU(this)">Cash Management</div>
+                    <div class="bu-option" data-bu="Payments" onclick="selectBU(this)">Payments</div>
+                    <div class="bu-option" data-bu="Cross Border" onclick="selectBU(this)">Cross Border</div>
+                    <div class="bu-option" data-bu="Emerging Tech Platforms" onclick="selectBU(this)">Emerging Tech Platforms</div>
+                    <div class="bu-option" data-bu="Structured Cross Border" onclick="selectBU(this)">Structured Cross Border</div>
+                    <div class="bu-option" data-bu="Other New Initiatives" onclick="selectBU(this)">Other New Initiatives</div>
+                    <div class="bu-option" data-bu="Central Functions" onclick="selectBU(this)">Central Functions</div>
+                </div>
+            </div>
+
+            <!-- Step 2: Customer Type Selection (for non-Central Functions) -->
+            <div class="wizard-step" id="step-2-customer">
+                <h3 style="text-align: center; margin-bottom: 24px; color: var(--text); font-weight: 600;">Select Customer Type</h3>
+                <div class="customer-type-grid">
+                    <div class="customer-option" data-customer="Banks/FIs" onclick="selectCustomerType(this)">Banks/FIs</div>
+                    <div class="customer-option" data-customer="Insurance Companies" onclick="selectCustomerType(this)">Insurance Companies</div>
+                    <div class="customer-option" data-customer="Corporates" onclick="selectCustomerType(this)">Corporates</div>
+                    <div class="customer-option" data-customer="MSME Customers" onclick="selectCustomerType(this)">MSME Customers</div>
+                    <div class="customer-option" data-customer="Referral Partners" onclick="selectCustomerType(this)">Referral Partners</div>
+                    <div class="customer-option" data-customer="Others" onclick="selectCustomerType(this)">Others</div>
+                </div>
+            </div>
+
+            <!-- Step 2: Central Functions Selection -->
+            <div class="wizard-step" id="step-2-central">
+                <h3 style="text-align: center; margin-bottom: 24px; color: var(--text); font-weight: 600;">Select Department</h3>
+                <div class="customer-type-grid">
+                    <div class="customer-option" data-department="Finance" onclick="selectDepartment(this)">Finance</div>
+                    <div class="customer-option" data-department="Admin" onclick="selectDepartment(this)">Admin</div>
+                    <div class="customer-option" data-department="Infosec" onclick="selectDepartment(this)">Infosec</div>
+                    <div class="customer-option" data-department="Marketing" onclick="selectDepartment(this)">Marketing</div>
+                    <div class="customer-option" data-department="Regulatory & Compliance" onclick="selectDepartment(this)">Regulatory & Compliance</div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="wizard-navigation">
+                <button class="btn-wizard btn-wizard-back" id="back-btn" onclick="goBack()" style="display: none;">Back</button>
+                <button class="btn-wizard btn-wizard-next" id="next-btn" onclick="goNext()" disabled>Next</button>
+            </div>
+        </div>
+    </div>
         <div class="header">
             <div class="header-content">
                 <div class="logo-section">
@@ -1436,8 +1730,8 @@
         }
 
         function showAddDocument() {
-            document.getElementById('add-document-form').style.display = 'block';
-            document.getElementById('documents-list').style.display = 'none';
+            document.getElementById('bu-modal').style.display = 'flex';
+            resetWizard();
         }
 
         function hideAddDocument() {
@@ -1687,6 +1981,9 @@
                 reviewDate: document.getElementById('review-date').value,
                 status: 'active',
                 addedDate: new Date().toISOString().split('T')[0]
+                businessUnit: selectedBU,
+                customerType: selectedCustomerType || selectedDepartment,
+                customerCategory: selectedBU === 'Central Functions' ? 'Central Functions' : 'Business Unit'
             };
 
             // Add file information if uploaded
@@ -2099,9 +2396,170 @@
                 day: 'numeric' 
             });
         }
+        // Modal and Wizard Variables
+        let currentStep = 1;
+        let selectedBU = '';
+        let selectedCustomerType = '';
+        let selectedDepartment = '';
+
+        // Modal Functions
+        function closeBUModal() {
+            document.getElementById('bu-modal').style.display = 'none';
+            resetWizard();
+        }
+
+        function resetWizard() {
+            currentStep = 1;
+            selectedBU = '';
+            selectedCustomerType = '';
+            selectedDepartment = '';
+            
+            // Reset step indicators
+            document.querySelectorAll('.step-dot').forEach(dot => {
+                dot.classList.remove('active', 'completed');
+            });
+            document.getElementById('step-dot-1').classList.add('active');
+            
+            // Reset wizard steps
+            document.querySelectorAll('.wizard-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('step-1').classList.add('active');
+            
+            // Reset selections
+            document.querySelectorAll('.bu-option, .customer-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Reset navigation
+            document.getElementById('back-btn').style.display = 'none';
+            document.getElementById('next-btn').disabled = true;
+            document.getElementById('next-btn').textContent = 'Next';
+        }
+
+        function selectBU(element) {
+            // Remove previous selections
+            document.querySelectorAll('.bu-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select current option
+            element.classList.add('selected');
+            selectedBU = element.dataset.bu;
+            
+            // Enable next button
+            document.getElementById('next-btn').disabled = false;
+        }
+
+        function selectCustomerType(element) {
+            // Remove previous selections
+            document.querySelectorAll('#step-2-customer .customer-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select current option
+            element.classList.add('selected');
+            selectedCustomerType = element.dataset.customer;
+            
+            // Enable next button
+            document.getElementById('next-btn').disabled = false;
+            document.getElementById('next-btn').textContent = 'Continue to Form';
+        }
+
+        function selectDepartment(element) {
+            // Remove previous selections
+            document.querySelectorAll('#step-2-central .customer-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select current option
+            element.classList.add('selected');
+            selectedDepartment = element.dataset.department;
+            
+            // Enable next button
+            document.getElementById('next-btn').disabled = false;
+            document.getElementById('next-btn').textContent = 'Continue to Form';
+        }
+
+        function goNext() {
+            if (currentStep === 1) {
+                // Move to step 2
+                currentStep = 2;
+                
+                // Update step indicators
+                document.getElementById('step-dot-1').classList.remove('active');
+                document.getElementById('step-dot-1').classList.add('completed');
+                document.getElementById('step-dot-2').classList.add('active');
+                
+                // Hide step 1
+                document.getElementById('step-1').classList.remove('active');
+                
+                // Show appropriate step 2 based on BU selection
+                if (selectedBU === 'Central Functions') {
+                    document.getElementById('step-2-central').classList.add('active');
+                } else {
+                    document.getElementById('step-2-customer').classList.add('active');
+                }
+                
+                // Update navigation
+                document.getElementById('back-btn').style.display = 'inline-block';
+                document.getElementById('next-btn').disabled = true;
+                document.getElementById('next-btn').textContent = 'Next';
+                
+            } else if (currentStep === 2) {
+                // Proceed to document form
+                closeBUModal();
+                showDocumentForm();
+            }
+        }
+
+        function goBack() {
+            if (currentStep === 2) {
+                // Go back to step 1
+                currentStep = 1;
+                
+                // Update step indicators
+                document.getElementById('step-dot-2').classList.remove('active');
+                document.getElementById('step-dot-1').classList.remove('completed');
+                document.getElementById('step-dot-1').classList.add('active');
+                
+                // Hide step 2
+                document.getElementById('step-2-customer').classList.remove('active');
+                document.getElementById('step-2-central').classList.remove('active');
+                
+                // Show step 1
+                document.getElementById('step-1').classList.add('active');
+                
+                // Reset step 2 selections
+                selectedCustomerType = '';
+                selectedDepartment = '';
+                document.querySelectorAll('#step-2-customer .customer-option, #step-2-central .customer-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+                
+                // Update navigation
+                document.getElementById('back-btn').style.display = 'none';
+                document.getElementById('next-btn').disabled = selectedBU ? false : true;
+                document.getElementById('next-btn').textContent = 'Next';
+            }
+        }
+
+        function showDocumentForm() {
+            document.getElementById('add-document-form').style.display = 'block';
+            document.getElementById('documents-list').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('bu-modal');
+            if (event.target === modal) {
+                closeBUModal();
+            }
+        });
     </script>
 </body>
 </html>
+
 
 
 
